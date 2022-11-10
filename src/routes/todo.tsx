@@ -1,10 +1,16 @@
+import { Route } from "@klevn/solid-router"
 import styles from "./todo.module.css"
 
 export default function Todo({password}:{password:string}){
-    return <>
-        <div class={styles.button}>
-            <p>Exit</p>
-            <p>Share</p>
+    const hello = "poop"
+    return <div class={styles.content}>
+        <div class={styles.buttons}>
+            <p>
+                <Route path="/">Exit</Route>
+            </p>
+            <p>
+                Share
+            </p>
         </div>
 
         <div class={styles.slide}>
@@ -15,7 +21,7 @@ export default function Todo({password}:{password:string}){
 
         <form class={styles.new}>
             <input class={styles.text} type="text"></input>
-            <input type="submit"/>
+            <input class={styles.submit} type="submit"/>
         </form>
-    </>
+    </div>
 }
