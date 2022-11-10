@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap');
+
+
 html {
     width: 100vw;
     height: 100vh;
@@ -15,13 +19,17 @@ body {
 * {
     margin: 0;
     padding: 0;
+
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 }
 
 .wrapper {
     padding-top: 3rem;
     padding-bottom: 3rem;
     
-    width: 40rem;
+    width: 20rem;
     display: flex;
     justify-content: center;
     align-items: center;

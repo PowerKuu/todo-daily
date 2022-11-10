@@ -2,7 +2,7 @@ import { router } from "@klevn/solid-router"
 import './index.css'
 
 import Home from "./routes/home"
-import Todo from "./routes/todo"
+import Todo from "./routes/todos"
 
 function Wrapper({children}:{children:any}){
     return <div class="wrapper">

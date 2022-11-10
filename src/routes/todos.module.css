@@ -1,0 +1,97 @@
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.content > * {
+    width: 100%;
+}
+
+
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.buttons p {
+    font-size: 1.8rem;
+    text-align: center;
+    background-color: black;
+    padding: 0.4rem 0rem 0.4rem 0rem;
+    width: 8rem;
+    color: white;
+    border-radius: 30px;
+    font-weight: 200;
+}
+
+.buttons p:hover {
+    cursor: pointer;
+}
+
+
+
+
+.slide {
+    display: flex;
+    justify-content: space-between;
+}
+
+.slide p {
+    font-size: 2.4rem;
+    text-align: center;
+
+}
+
+.slide img:hover {
+    cursor: pointer;
+}
+
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+.new {
+    display: flex;
+    justify-content: stretch;
+    border: 0;
+    outline: 2px solid #B7B7B7;
+    border-radius: 30px;
+    padding-left: 0.1rem;
+}   
+
+.new .text, .new .submit {
+    border: 0;
+    background-color: #00000000;
+    padding: 0.6rem 2.5rem 0.6rem 2.5rem;
+
+    font-size: 1.2rem;
+} 
+
+.new .text {
+    width: 100%;
+    padding-left: 1rem;
+    font-size: 1.4rem;
+}
+
+.new .submit {
+    position: relative;
+    outline: 3px solid #000000;
+    outline-offset: -1px;
+
+    border-radius: 30px;
+    padding: 0.2rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+
+    color: white;
+    background-color: #000000;
+}
+
+.new:has(> .text:focus) {
+    border-color: #000000;
+}
+
