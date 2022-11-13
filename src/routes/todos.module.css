@@ -1,3 +1,9 @@
+.todos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 .content {
     width: 100%;
     display: flex;
@@ -45,7 +51,11 @@
 
 }
 
-.slide img:hover {
+.slide img.gray {
+    filter: invert(47%) sepia(67%) saturate(0%) hue-rotate(283deg) brightness(97%) contrast(98%);
+}
+
+.slide img:not(.gray):hover {
     cursor: pointer;
 }
 
@@ -61,6 +71,7 @@ textarea:focus, input:focus{
     outline: 2px solid #B7B7B7;
     border-radius: 30px;
     padding-left: 0.1rem;
+    visibility: hidden;
 }   
 
 .new .text, .new .submit {
@@ -93,5 +104,10 @@ textarea:focus, input:focus{
 
 .new:has(> .text:focus) {
     border-color: #000000;
+}
+
+
+.viseble {
+    visibility: visible;
 }
 

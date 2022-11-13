@@ -1,0 +1,30 @@
+.todo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.todo div {
+    height: 1.4rem;
+    width: 1.4rem;
+    border: black solid 2px;
+    border-radius: 30px;
+}
+
+.todo p {
+    font-size: 1.7rem;
+}
+
+
+
+.none {
+    background-color: #fff;
+}
+
+.done  {
+    background-color: #28FF58;
+}   
+
+.fail {
+    background-color: #FF2828;
+}

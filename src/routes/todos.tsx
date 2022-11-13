@@ -8,7 +8,7 @@ import leftArrow from "../assets/arrow-left.svg"
 import rightRight from "../assets/arrow-right.svg"
 
 import plusSymbol from "../assets/plus-symbol.svg"
-import { createSignal } from "solid-js"
+import { createEffect, createSignal } from "solid-js"
 
 interface Todo {
     text: string,
@@ -22,59 +22,27 @@ interface Todos {
 export function calculateTimeOffset(offset: number): Date {
     const millisecondsInDay = 86_400_000
     const offsetedUnixMulliseconds =  new Date().getTime() - (offset * millisecondsInDay)
-    return new Date(offsetedUnixMulliseconds)
+    const offsetedTime = new Date(offsetedUnixMulliseconds)
+
+    offsetedTime.setHours(0,0,0,0)
+
+    return offsetedTime
+}
+
+export function formatDate(date: Date): string {
+    return `${date.getFullYear()}/${String(date.getMonth()).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`
 }
 
 export default function Todos({password, initTimeOffset}:{password:string, initTimeOffset?:number}){
-    const initTodos:Todos = {
-        [new Date().getTime().toString()]: [
-            {
-                text: "hello",
-                state: 1
-            },
-            {
-                text: "hello",
-                state: 0
-            },
-            {
-                text: "hello",
-                state: 2
-            },
-        ],
+    const initTodosHistory:Todos = {}
 
-        [(new Date().getTime()-3400000).toString()]: [
-            {
-                text: "hello",
-                state: 1
-            },
-            {
-                text: "hello",
-                state: 0
-            },
-            {
-                text: "hello",
-                state: 2
-            },
-        ],
+    const todosHistory = initTodosHistory
 
-        [(new Date().getTime()-7400000).toString()]: [
-            {
-                text: "hello",
-                state: 1
-            },
-            {
-                text: "hello",
-                state: 0
-            },
-            {
-                text: "hello",
-                state: 2
-            },
-        ],
-    }
-
-    const [getTodos, setTodos] = createSignal(initTodos)
     const [getTimeOffset, setTimeOffset] = createSignal(initTimeOffset ?? 0)
+    const [getTodosElement, setTodosElement] = createSignal(mapTodos())
+    function share(){
+        alert(password)
+    }
 
     function slide(left:boolean){
         if (left){
@@ -83,76 +51,61 @@ export default function Todos({password, initTimeOffset}:{password:string, initT
             if (getTimeOffset() == 0) return
             setTimeOffset(getTimeOffset()-1)
         }
-    }
 
-    function share(){
-        alert(password)
+        setTodosElement(mapTodos())
     }
-
+    
     function mapTodos(){
-        const currentTodos = getTodos()[
-            calculateTimeOffset(
-                getTimeOffset()
-            ).getTime().toString()
-        ]
+        const currentTodos = getTodos(getTimeOffset())
 
         if (!currentTodos) return
         return currentTodos.map(({text, state}) => {
-            return <Todo text={text} state={state}></Todo>
+            return <Todo text={/*@once*/ text} state={/*@once*/ state} toggle={() => {
+                
+            }}></Todo>
         })
     }
 
-    function getLatestTodo(){
-        const todos = getTodos()
+    function getTodos(timeOffset: number){
+        const timeKey = calculateTimeOffset(timeOffset).getTime().toString()
 
-        interface Current {
-            time: number,
-            todos: Todo[]
-        }
+        if (!todosHistory[timeKey]){
+            var latest:Todo[] = []
+            var latestTimeKey = 0
+            for (var compareTimeKey in todosHistory){
+                const nTimeKey = Number(timeKey)
+                const nCompareTimeKey = Number(compareTimeKey)
 
-        var current:Current = {
-            time: 0,
-            todos: []
-        }
-
-        for (var timeKey in todos){
-            if (current.time < Number(timeKey)){
-                current = {
-                    time: Number(timeKey),
-                    todos: todos[timeKey]
+                if (nCompareTimeKey > latestTimeKey && nCompareTimeKey < nTimeKey){
+                    latest = todosHistory[compareTimeKey]
+                    latestTimeKey = nCompareTimeKey
                 }
             }
-        }
-
-        return current
-    }
-
-    function addTodo(text: string){
-        const todos = getTodos()
-        const timeKey = calculateTimeOffset(0).toString()
-        var newTodos = []
-
-        if (!todos[timeKey]){
-            newTodos = getLatestTodo().todos
+            
+            return latest
         } else {
-            newTodos = todos[timeKey]
+            return todosHistory[timeKey]
         }
-
-        newTodos.push({
-            text,
-            state: 0,
-        })
-
-        setTodos(todos)
     }
+
+    function addTodo(todo: Todo) {
+        const timeKey = calculateTimeOffset(getTimeOffset()).getTime().toString()
+
+        const todos = getTodos(getTimeOffset())
+        todos.push(todo)
+
+        todosHistory[timeKey] = todos
+        
+        setTodosElement(mapTodos())
+    }   
 
     let formElement:any
-
+    
     return <div class={styles.content}>
         <div class={styles.buttons}>
-            <p>
-                <Route path="/">Exit</Route>
-            </p>
+            <Route path="/">
+                <p>Exit</p>
+            </Route>
 
             <p onclick={share}>
                 Share
@@ -161,16 +114,17 @@ export default function Todos({password, initTimeOffset}:{password:string, initT
 
         <div class={styles.slide}>
             <img onclick={() => {slide(true)}} src={leftArrow} alt="" />
-            <p>{calculateTimeOffset(getTimeOffset()).toLocaleDateString()}</p>
-            <img onclick={() => {slide(false)}} src={rightRight} alt=""/>
+            <p>{formatDate(calculateTimeOffset(getTimeOffset()))}</p>
+            <img class={getTimeOffset() == 0 ? styles.gray : ""} onclick={() => {slide(false)}} src={rightRight} alt=""/>
         </div>
 
-        <form ref={formElement} class={styles.new} onsubmit={(event) => {
+        <form ref={formElement} class={`${styles.new} ${getTimeOffset() == 0 ? styles.viseble : ""}`} onsubmit={(event) => {
             event.preventDefault()
             const formData = new FormData(formElement)
             const text = formData.get("text") as string
 
             if (!text) return
+            addTodo({text, state: 0})
         }}>
             <input class={styles.text} name="text" type="text"></input>
 
@@ -178,7 +132,7 @@ export default function Todos({password, initTimeOffset}:{password:string, initT
         </form>
 
         <div class={styles.todos}>
-            {mapTodos()}
+            {getTodosElement()}
         </div>
     </div>
 }
